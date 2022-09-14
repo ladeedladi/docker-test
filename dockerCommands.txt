@@ -99,4 +99,11 @@ mongo://name can be whatever
 5.1   - mongodb:/data/db // volume easy to find
         for this got this error "ERROR: Named volume "mongo-db:/data/db:rw" is used in service "mongo" but no declaration was found in the volumes section."
         to resolve this error "ERROR: Named volume "mongo-db:/data/db" add 
+
+        volumes: 
+          mongo-db        
         
+        //again build the image 
+        /// but when del or down the container dont use -v flag
+
+        docker volume prune -to delete all the non used volumes 
