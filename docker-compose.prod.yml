@@ -1,0 +1,14 @@
+version: "3"
+# containers are refered to as services
+services:
+  dummycontainer:
+    build:
+      context: .
+      args: 
+        NODE_ENV: production
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    command: node index.js

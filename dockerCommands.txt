@@ -1,0 +1,102 @@
+Docker build .
+Docker build -t <dockerImagename> .
+Docker image ls
+//to delte. A docker image
+
+Docker image rm <image id>
+
+//To create a container
+
+Docker run -p 3000:3000 -d —name <container name> <image name>
+ Docker rm <container name> -f
+
+//to see all the containers
+Docker ps
+
+//to see what’s inside docker image 
+Docker exec -it node-app  bash
+
+//to automate container build even when something chenges
+docker run -v $(pwd):/app  -p 4000:3000 -d --name dummycontainer test-image
+// the -v will override the folders like if node_modules are deleted fro test flder it will be deleted from the docker container also 
+
+//to prevent this add an  anonymous volume (-v)      // bind volume  -v $(pwd):/app ,anonymous volume  -v /app/node_modules
+docker run -v $(pwd):/app -v /app/node_modules -p 4000:3000 -d --name dummycontainer test-image
+
+//to make the container read-only
+docker run -v $(pwd):/app:ro -v /app/node_modules -p 4000:3000 -d --name dummycontainer test-image
+
+//to set port env value in cli
+docker run -v $(pwd):/app -v /app/node_modules -e PORT=5000 -p 4000:5000 -d --name dummycontainer test-image
+
+//to see the env set 
+docker exec -it dummycontainer bash
+printenv
+
+//to add env file
+
+//to see the stoped docker containers also
+docker ps -a
+
+//to see the logs of the container
+docker logs dummycontainer
+
+//to see all the volumes 
+docker volume ls
+
+//to delete the volume when deleting the container
+docker rm <container name> -fv
+
+
+//to run multiple containers or to avoid docker run in cli -create docker compose file
+//to run the docker-compose file 
+docker-compose up
+
+//to delete the docker container made from the compose file .-v to delte the volume
+docker-compose down -v 
+
+//docker compose is dump .if we change anything in the Dockerfile it wont automatically rebuild .to rebuild the docker image 
+docker-compose up -d --build
+
+
+//to run diffrenet compose file
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up  
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up  
+
+
+
+................................................................
+//to add mongo
+
+1.add mongo in the services in compose file and
+mongo://name can be whatever
+     image: mongo //to get the image of mongo from the docker hub .so we dont have to build it for ourself
+     environment: 
+        - MONGO_INITDB_ROOT_USERNAME=lad
+        - MONGO_INITDB_ROOT_PASSWORD=sikk
+
+//  - MONGO_INITDB_ROOT_USERNAME,MONGO_INITDB_ROOT_PASSWORD these are the two fileds in image so we have to assign values in compose
+2.docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d 
+
+//to go inside the container
+3.docker exec -it test_mongo_1 bash
+
+//to run mongo
+4. mongosh admin -u lad -p sikk or mongosh  -u lad -p sikk
+
+//issue is each time the container is ceated the data gets lost .to resilve this issue create volume for persistence
+//so add volumes in the docker-compose.yml in mongo
+
+5. mongo:
+     image: mongo 
+     environment: 
+        - MONGO_INITDB_ROOT_USERNAME=lad
+        - MONGO_INITDB_ROOT_PASSWORD=sikk
+     volumes:
+        - /data/db //anonymous volume hard to find (anonymous volume)
+        - mongodb:/data/db // volume easy to find (named volume)
+
+5.1   - mongodb:/data/db // volume easy to find
+        for this got this error "ERROR: Named volume "mongo-db:/data/db:rw" is used in service "mongo" but no declaration was found in the volumes section."
+        to resolve this error "ERROR: Named volume "mongo-db:/data/db" add 
+        
