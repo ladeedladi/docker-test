@@ -107,3 +107,15 @@ mongo://name can be whatever
         /// but when del or down the container dont use -v flag
 
         docker volume prune -to delete all the non used volumes 
+6.//to run mongodb in  nodejs
+mongodb://lad:sikk@172.18.0.2/?authSource=admin
+the ip-172.18.0.2 is the ip of the mongo container 
+6.1//to find the ip of the container
+docker inspect containerId or name 
+//check docker logs dummycontainer(node container) to see if its successfully connected or not
+
+7.//the ip address of container keeps change .so to avoid this 
+mongodb://lad:sikk@mongo/?authSource=admin
+the mongo is the service .this way of giving the service as ip is only possible in a custome network
+in a custom network the containers can communicate with the container name
+behind the scenes DNS
